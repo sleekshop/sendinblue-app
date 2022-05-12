@@ -1,0 +1,11 @@
+{% extends "page.html" %}
+{%block title%}Home{%endblock%}
+{%block content%}
+<main role="main" class="inner cover mt-5">
+  <h1 class="cover-heading">{{data}}</h1>
+  <p class="lead">Welcome to Boilerplate Application. Add all your settings and you are ready to go.</p>
+  <p class="lead">
+    <a href="/{{path}}/index.php/settings?token={{token}}&ses={{remote_session}}" class="btn btn-lg btn-secondary">Add settings</a>
+  </p>
+</main>
+{%endblock%}
