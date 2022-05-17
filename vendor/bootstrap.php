@@ -8,6 +8,8 @@
 // Load our autoloader
 require_once __DIR__.'/autoload.php';
 require_once __DIR__.'/config.php';
+require_once __DIR__.'/custom/mail.php';
+
 require_once __DIR__.'/sleekcommerce/sleekshop_request.inc.php';
 
 // Specify our Twig templates location

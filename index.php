@@ -7,7 +7,6 @@
 */
 
 require __DIR__ . '/vendor/bootstrap.php';
-
 //define application folder name
 define("APP_PATH",basename(__DIR__));
 
@@ -17,12 +16,34 @@ $request=array_pop($request);
 $request="/".$request;
 $app_path = APP_PATH;
 $remote_session = $_GET["ses"];
+$custom_template = "";
+$custom_mail_file = $_SERVER['SERVER_NAME']."/".basename(__DIR__)."/custom/mail.php";
+if(isset($remote_session)){
+  $custom_template = '<strong>Sample HTML Code</strong><br><form action="'.$custom_mail_file.'">
+  <div class="container">
+    <h2>Subscribe to our Newsletter</h2>
+    <p>Lorem ipsum text about why you should subscribe to our newsletter blabla. Lorem ipsum text about why you should subscribe to our newsletter blabla.</p>
+  </div>
+
+  <div class="container" style="background-color:white">
+    <input type="text" placeholder="Name" name="name" required>
+    <input type="text" placeholder="Email address" name="mail" required>
+    <label>
+      <input type="checkbox" checked="checked" name="subscribe"> Daily Newsletter
+    </label>
+  </div>
+
+  <div class="container">
+    <input type="submit" value="Subscribe">
+  </div>
+</form>';
+}
 switch ($request) {
     case '/' :
             echo $twig->render('error.html', ['data' =>  '404 Not Found!!!','path' => $app_path]);
             break;
     case '/home' :
-            echo $twig->render('index.html', ['data' =>  'Welcome Application Boilerplate','path' => $app_path,'token'=>$_GET["token"],'remote_session'=>$remote_session] );
+            echo $twig->render('index.html', ['data' =>  'Welcome to Sendinblue','path' => $app_path,'token'=>$_GET["token"],'remote_session'=>$remote_session,'custom_html' => $custom_template] );
             break;
     case '/settings' :
              $data_array = $myarray;
@@ -36,6 +57,7 @@ switch ($request) {
                 $data_array['LICENCE_USERNAME']   = $_POST['LICENCE_USERNAME'];
                 $data_array['LICENCE_PASSWORD']   = $_POST['LICENCE_PASSWORD'];
                 $data_array['APPLICATION_TOKEN']  = $_POST['APPLICATION_TOKEN'];
+                $data_array['SENDINBLUE_TOKEN']   = $_POST['SENDINBLUE_TOKEN'];
 
                 //$data_array = json_encode($data_array, JSON_PRETTY_PRINT);
                 file_put_contents(__DIR__.'/vendor/config.php',
@@ -48,14 +70,14 @@ switch ($request) {
                   $res=$sr->instant_login($_GET["token"]);
                   $jsondecoded = json_decode($res,true);
                   if($jsondecoded['status'] == "SUCCESS"){
-                    echo $twig->render('settings.html', ['data' => $data_message,'config_data' =>  $data_array,'path' => $app_path,'token'=>$_GET["token"],'remote_session'=>$jsondecoded['remote_session']]);
+                    echo $twig->render('settings.html', ['data' => $data_message,'mail_action' => $custom_mail_file,'config_data' =>  $data_array,'path' => $app_path,'token'=>$_GET["token"],'remote_session'=>$jsondecoded['remote_session']]);
                   }else{
                     echo $twig->render('error.html', ['data' =>  'PERMISSION_DENIED','path' => $app_path] );
                   }
              }
              else{
                 $data_message = "Configuration Settings!!";
-                echo $twig->render('settings.html', ['data' => $data_message,'path' => $app_path,'config_data'=>$data_array,'token'=>$_GET["token"],'remote_session'=>$remote_session] );
+                echo $twig->render('settings.html', ['data' => $data_message,'path' => $app_path,'config_data'=>$data_array,'token'=>$_GET["token"],'remote_session'=>$remote_session,'custom_html' => $custom_template] );
               }
               break;
     default:
@@ -68,7 +90,7 @@ switch ($request) {
                         $res=$sr->instant_login($_GET["token"]);
                         $jsondecoded = json_decode($res,true);
                         if($jsondecoded['status'] == "SUCCESS"){
-                          echo $twig->render('index.html', ['path' => $app_path,'token'=>$_GET["token"],'remote_session'=>$jsondecoded['remote_session']]);
+                          echo $twig->render('index.html', ['path' => $app_path,'token'=>$_GET["token"],'custom_template' => $custom_mail_file,'remote_session'=>$jsondecoded['remote_session']]);
                         }else{
                           echo $twig->render('error.html', ['data' =>  'PERMISSION_DENIED','path' => $app_path] );
                         }
