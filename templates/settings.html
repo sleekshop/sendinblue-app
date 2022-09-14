@@ -1,7 +1,6 @@
 {% extends "page.html" %}
 {%block title%}Home{%endblock%}
 {%block content%}
-{{mail_action}}
 <main role="main" class="inner cover mt-5 container">
   <h1 class="cover-heading">{{data}}</h1>
   <form action="" method="post" class="col-md-6">
@@ -29,7 +28,8 @@
     {{remote_session}}"/>
     <button type="submit" class="btn btn-primary" name="add">Submit</button>
   </form>
-  {{custom_html}}
+  <textarea name="name" rows="8" cols="80">{{custom_html}}</textarea>
+  {{custom_html|raw}}
 
 </main>
 {%endblock%}

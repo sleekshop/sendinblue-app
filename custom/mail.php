@@ -13,14 +13,12 @@ if($_POST) {
 
     } else {
 
-        if( !filter_var($subscriber_email, FILTER_VALIDATE_EMAIL) || $subscriber_fhp_input != "") {
+        if( !filter_var($subscriber_email, FILTER_VALIDATE_EMAIL)) {
 
             $array["valid"] = 0;
             $array["message"] = $varErrorValidation;
 
         } else {
-
-            if ($mode === "mailchimp") {
 
                 // where are we posting to?
                 $url =  $myarray['SENDINBLUE_TOKEN'];
@@ -51,8 +49,6 @@ if($_POST) {
 
                 $array["valid"] = 1;
                 $array["message"] = $varSuccess;
-
-            }
 
         }
 

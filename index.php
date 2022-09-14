@@ -19,24 +19,24 @@ $remote_session = $_GET["ses"];
 $custom_template = "";
 $custom_mail_file = $_SERVER['SERVER_NAME']."/".basename(__DIR__)."/custom/mail.php";
 if(isset($remote_session)){
-  $custom_template = '<strong>Sample HTML Code</strong><br><form action="'.$custom_mail_file.'">
-  <div class="container">
-    <h2>Subscribe to our Newsletter</h2>
-    <p>Lorem ipsum text about why you should subscribe to our newsletter blabla. Lorem ipsum text about why you should subscribe to our newsletter blabla.</p>
-  </div>
-
-  <div class="container" style="background-color:white">
-    <input type="text" placeholder="Name" name="name" required>
-    <input type="text" placeholder="Email address" name="mail" required>
-    <label>
-      <input type="checkbox" checked="checked" name="subscribe"> Daily Newsletter
-    </label>
-  </div>
-
-  <div class="container">
-    <input type="submit" value="Subscribe">
-  </div>
-</form>';
+  $custom_template = '<form action="'.$custom_mail_file.'">
+                          <div class="container">
+                            <div class="row">
+                              <div class="col-sm-12">
+                              	 <div class="single">
+                                		<h2>Subscribe to our Newsletter</h2>
+                                  	<div class="input-group">
+                                       <input type="email" class="form-control" name="email" placeholder="Enter your email">
+                                       <span class="input-group-btn">
+                                            <button class="btn btn-theme" type="submit" name="subscribe">Subscribe</button>
+                                       </span>
+                                    </div>
+                                	</div>
+                              </div>
+                            </div>
+                          </div>
+                      </form>
+                      ';
 }
 switch ($request) {
     case '/' :
@@ -90,12 +90,12 @@ switch ($request) {
                         $res=$sr->instant_login($_GET["token"]);
                         $jsondecoded = json_decode($res,true);
                         if($jsondecoded['status'] == "SUCCESS"){
-                          echo $twig->render('index.html', ['path' => $app_path,'token'=>$_GET["token"],'custom_template' => $custom_mail_file,'remote_session'=>$jsondecoded['remote_session']]);
+                          echo $twig->render('index.html', ['path' => $app_path,'token'=>$_GET["token"],'custom_template' => $custom_mail_file,'remote_session'=>$jsondecoded['remote_session'],'custom_html' => $custom_template]);
                         }else{
                           echo $twig->render('error.html', ['data' =>  'PERMISSION_DENIED','path' => $app_path] );
                         }
                   }else{
-                    echo $twig->render('index.html', ['token'=>$_GET["token"],'path' => $app_path]);
+                    echo $twig->render('index.html', ['token'=>$_GET["token"],'path' => $app_path,'custom_html' => $custom_template]);
                   }
                 }
                 break;
